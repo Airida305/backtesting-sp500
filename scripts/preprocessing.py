@@ -9,7 +9,7 @@ def preprocessing(stock_prices, sp500):
     stock_prices["Date"] = pd.to_datetime(stock_prices["Date"])
     stock_prices = stock_prices.sort_values("Date")
 
-    prices = stock_prices.set_index("Date").resample("M").last()
+    prices = stock_prices.set_index("Date").resample("ME").last()
     prices = prices.apply(pd.to_numeric, errors="coerce")
     prices = prices.mask((prices < 0.1) | (prices > 10000))
 
@@ -40,11 +40,9 @@ def preprocessing(stock_prices, sp500):
     monthly_future_return = monthly_future_return.ffill()
     monthly_future_return = monthly_future_return.mask(original_future_na_mask)
 
-    prices_long = prices.stack(dropna=False).rename("Price")
-    past_long = monthly_past_return.stack(dropna=False).rename("monthly_past_return")
-    future_long = monthly_future_return.stack(dropna=False).rename(
-        "monthly_future_return"
-    )
+    prices_long = prices.stack().rename("Price")
+    past_long = monthly_past_return.stack().rename("monthly_past_return")
+    future_long = monthly_future_return.stack().rename("monthly_future_return")
 
     prices = pd.concat([prices_long, past_long, future_long], axis=1)
     prices.index.names = ["Date", "ticker"]
@@ -54,10 +52,10 @@ def preprocessing(stock_prices, sp500):
 
     sp500["Date"] = pd.to_datetime(sp500["Date"])
     sp500 = sp500.sort_values("Date")
-    sp500 = sp500.set_index("Date").resample("M").last()
-    sp500["monthly_past_return"] = sp500["Adjusted Close"].div(
-        sp500["Adjusted Close"].shift(1)
-    ).sub(1)
+    sp500 = sp500.set_index("Date").resample("ME").last()
+    sp500["monthly_past_return"] = (
+        sp500["Adjusted Close"].div(sp500["Adjusted Close"].shift(1)).sub(1)
+    )
     sp500 = sp500[["Adjusted Close", "monthly_past_return"]].dropna()
 
     print("completed preprocessing")

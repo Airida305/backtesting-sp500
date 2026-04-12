@@ -1,0 +1,7 @@
+Stock Picking 20 Strategy
+Total PnL: 66.055692
+Total return: 0.021172
+
+SP500 Benchmark Strategy
+Total PnL: 11.589245
+Total return: 0.003237
