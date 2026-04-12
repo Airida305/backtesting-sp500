@@ -28,16 +28,16 @@ def memory_reducer(paths):
                 if df[col].dtype.kind == "f":
                     df[col] = df[col].astype(np.float32)
                 elif df[col].dtype.kind in ("u", "i") or if_column_can_be_integer:
-                    if (min_val >= np.iinfo(np.int8).min) and max_val <= np.iinfo(
-                        np.int8
+                    if (min_val >= np.iinfo(np.int8).min) and (
+                        max_val <= np.iinfo(np.int8)
                     ).max:
                         df[col] = df[col].astype(np.int8)
-                    elif (min_val >= np.iinfo(np.int16).min) and max_val <= np.iinfo(
-                        np.int16
+                    elif (min_val >= np.iinfo(np.int16).min) and (
+                        max_val <= np.iinfo(np.int16)
                     ).max:
                         df[col] = df[col].astype(np.int16)
-                    elif (min_val >= np.iinfo(np.int32).min) and max_val <= np.iinfo(
-                        np.int32
+                    elif (min_val >= np.iinfo(np.int32).min) and (
+                        max_val <= np.iinfo(np.int32)
                     ).max:
                         df[col] = df[col].astype(np.int32)
                     else:
@@ -58,7 +58,8 @@ def memory_reducer(paths):
         future_sp500 = executor.submit(reduce, sp500)
         stock_prices = future_stock.result()
         sp500 = future_sp500.result()
-
+    # stock_prices = reduce(stock_prices)
+    # sp500 = reduce(sp500)
     stock_mem_after = stock_prices.memory_usage(deep=True).sum() / 1024**2
     sp500_mem_after = sp500.memory_usage(deep=True).sum() / 1024**2
     print(

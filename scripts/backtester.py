@@ -61,7 +61,7 @@ def backtest(stock_prices, sp500):
     plt.xlim(strategy_cum_pnl.index.min(), strategy_cum_pnl.index.max())
     plt.legend()
     plt.tight_layout()
-    plt.savefig(RESULTS_DIR / "strategy_vs_sp500.png")
+    plt.savefig(RESULTS_DIR / "plots/strategy_vs_sp500.png")
     plt.close()
 
     print("Backtesting completed")
