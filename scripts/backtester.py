@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -8,13 +8,14 @@ def backtest(stock_prices, sp500):
     stock_prices = stock_prices.copy()
     sp500 = sp500.copy()
 
-    os.makedirs("results", exist_ok=True)
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    RESULTS_DIR = BASE_DIR / "results"
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
     signal_series = stock_prices["signal"].astype(int)
     stock_prices["PnL"] = signal_series * stock_prices["monthly_future_return"]
 
     strategy_pnl = stock_prices.groupby(level="Date")["PnL"].sum().sort_index()
-    strategy_signal = signal_series.groupby(level="Date").sum().sort_index()
 
     total_strategy_pnl = stock_prices["PnL"].sum()
     total_strategy_return = (
@@ -35,7 +36,7 @@ def backtest(stock_prices, sp500):
     strategy_cum_pnl = strategy_pnl.loc[common_index].cumsum()
     benchmark_cum_pnl = benchmark_pnl.loc[common_index].cumsum()
 
-    with open("results/results.txt", "w", encoding="utf-8") as file:
+    with open(RESULTS_DIR / "results.txt", "w", encoding="utf-8") as file:
         file.write("Stock Picking 20 Strategy\n")
         file.write(f"Total PnL: {total_strategy_pnl:.6f}\n")
         file.write(f"Total return: {total_strategy_return:.6f}\n\n")
@@ -51,7 +52,7 @@ def backtest(stock_prices, sp500):
     plt.ylabel("Cumulative PnL")
     plt.legend()
     plt.tight_layout()
-    plt.savefig("results/strategy_vs_sp500.png")
+    plt.savefig(RESULTS_DIR / "strategy_vs_sp500.png")
     plt.close()
 
     print("Backtesting completed")
