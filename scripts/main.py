@@ -12,7 +12,7 @@ sp500_path = BASE_DIR / "data" / "sp500.csv"
 
 
 def main():
-    stock, sp500 = memory_reducer(stock_prices_path, sp500_path)
+    stock, sp500 = memory_reducer([str(stock_prices_path), str(sp500_path)])
     stock, sp500 = preprocessing(stock, sp500)
     stock = create_signal(stock, sp500)
     backtest(stock, sp500)

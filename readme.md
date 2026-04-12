@@ -1,8 +1,8 @@
 ## Raid Group for backtesting-SP500
 | User | Role | Assessment |
 |------|------|------------|
-| Rustem Satimov | Leader | TBD |
-| Aigerim Akhmetova | Member | TBD |
+| Rustem Satimov | Leader | Mounting point, Data recreational approach, data analysis, quantative analysis |
+| Aigerim Akhmetova | Member | Distinctive approach, Data preperation, Main visualization, PnL analysis |
 ___
 
 ## Main goal
@@ -37,13 +37,16 @@ pip install -r requirements.txt
 ```
 4) Запустить полный пайплайн
 ```
-cd scripts
-python main.py
+python ./scripts/main.py
 ```
-5) Запустить notebook
-```
-jupyter notebook
-```
+5) results/plots
+    для .png графиков доходности и Quantative EDA
+6) results/results.txt
+    для численных результатов по стратегии и бенчмарку
+7) results/outliers.txt
+    для списка(5) подтвержденных выбросов
+8) notebook/analysis.ipynb
+    для EDA и анализа выбросов/стратегии1-2
 ____
 
 ## Project structure
@@ -123,16 +126,24 @@ monthly_future_return​=(​price(t+1) ​− price(t​)​)/price(t)
 ## Ожидаемые результаты
 После запуска проекта должны быть созданы или обновлены следующие файлы:
 
-1) В папке results/
-1.1) results.txt — общий PnL и общая доходность для:
-1.1.1) стратегии Stock Picking 20
-1.1.2) бенчмарка S&P 500
-1.2) outliers.txt — как минимум 5 подтвержденных выбросов в формате:
-1.2.1) ticker
-1.2.2) date
-1.2.3) price
-1.3) график доходности, сохранённый в results/
-1.4) графики EDA, сохранённые в results/plots/
+- В папке `results/` должны появиться или обновиться следующие файлы и папки:
+
+    - **results.txt**  
+        Содержит общий PnL и общую доходность для:
+        - стратегии Stock Picking 20
+        - бенчмарка S&P 500
+
+    - **outliers.txt**  
+        Список как минимум 5 подтвержденных выбросов в формате:
+        - ticker
+        - date
+        - price
+
+    - **График доходности**  
+        Сохранён в `results/` (например, `results/performance.png`).
+
+    - **Графики для raid TASKs/EDA**  
+        Сохранены в папке `results/plots/` (например, `results/plots/eda_*.png`).
 
 ## Почему выбрана именно эта стратегия
 Проект прямо требует использовать простой сигнал, основанный на прошлых доходностях.

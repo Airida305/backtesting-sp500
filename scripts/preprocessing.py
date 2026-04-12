@@ -20,7 +20,9 @@ def preprocessing(stock_prices, sp500):
         .reset_index(drop=True)
     )
 
-    raw_long["daily_return"] = raw_long.groupby("ticker")["price"].pct_change(fill_method=None)
+    raw_long["daily_return"] = raw_long.groupby("ticker")["price"].pct_change(
+        fill_method=None
+    )
 
     price_outliers = raw_long[
         ((raw_long["price"] < 0.1) | (raw_long["price"] > 10000))
@@ -35,17 +37,38 @@ def preprocessing(stock_prices, sp500):
 
     outliers = (
         pd.concat([price_outliers, return_outliers], axis=0)
-        .drop_duplicates(subset=["ticker", "Date", "price"])
+        .drop_duplicates(subset=["ticker", "price"])
         .sort_values(["ticker", "Date"])
-        .head(5)
-        .copy()
     )
 
-    outliers["Date"] = outliers["Date"].dt.strftime("%Y-%m-%d")
-
+    top5_outliers = (
+        outliers.groupby("ticker")
+        .agg(
+            Min_Outlier_Price=("price", "min"),
+            Max_Outlier_Price=("price", "max"),
+            Date=("Date", "last"),
+        )
+        .reset_index()
+        .sort_values("Max_Outlier_Price", ascending=False)
+        .head(5)
+        .rename(
+            columns={
+                "Date": "Date",
+                "ticker": "Ticker",
+                "Min_Outlier_Price": "Min Outlier Price",
+                "Max_Outlier_Price": "Max Outlier Price",
+            }
+        )
+    )
     with open(RESULTS_DIR / "outliers.txt", "w", encoding="utf-8") as file:
-        for _, row in outliers.iterrows():
-            file.write(f"{row['ticker']},{row['Date']},{row['price']}\n")
+        file.write(
+            f"{'Ticker':<10} {'Date':<14} {'Min Outlier Price':>20} {'Max Outlier Price':>20}\n"
+        )
+        file.write("-" * 66 + "\n")
+        for _, row in top5_outliers.iterrows():
+            file.write(
+                f"{row['Ticker']:<10} {str(row['Date'].date()):<14} {row['Min Outlier Price']:>20} {row['Max Outlier Price']:>20}\n"
+            )
 
     prices = stock_prices.set_index("Date").resample("ME").last()
     prices = prices.apply(pd.to_numeric, errors="coerce")
