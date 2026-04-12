@@ -15,9 +15,10 @@ def memory_reducer(stock_prices, sp500):
             if is_numeric_dtype(df[col]):
                 min_val = df[col].min(skipna=True)
                 max_val = df[col].max(skipna=True)
+
                 if df[col].dtype.kind == "f":
                     df[col] = df[col].astype(np.float32)
-                elif df[col].dtype.kind == "ui":
+                elif df[col].dtype.kind in ("u", "i"):
                     if (min_val >= np.iinfo(np.int8).min) and max_val <= np.iinfo(
                         np.int8
                     ).max:
@@ -40,16 +41,20 @@ def memory_reducer(stock_prices, sp500):
                         df[col] = df[col].astype("category")
         return df
 
+    stock_mem_before = stock_prices.memory_usage(deep=True).sum() / 1024**2
+    sp500_mem_before = sp500.memory_usage(deep=True).sum() / 1024**2
+
     with concurrent.futures.ThreadPoolExecutor() as executor:
         future_stock = executor.submit(reduce, stock_prices)
         future_sp500 = executor.submit(reduce, sp500)
         stock_prices = future_stock.result()
         sp500 = future_sp500.result()
 
-    stock_mem_check = stock_prices.memory_usage(deep=True).sum() / 1024**2
-    sp500_mem_check = sp500.memory_usage(deep=True).sum() / 1024**2
+    stock_mem_after = stock_prices.memory_usage(deep=True).sum() / 1024**2
+    sp500_mem_after = sp500.memory_usage(deep=True).sum() / 1024**2
     print(
-        f"Memory usage after reduction: {stock_mem_check:.3f} MB (stock_prices), {sp500_mem_check:.3f} MB (sp500)"
+        f"Memory usage: {stock_mem_before:.3f} MB -> {stock_mem_after:.3f} MB (stock_prices), "
+        f"{sp500_mem_before:.3f} MB -> {sp500_mem_after:.3f} MB (sp500)"
     )
     print("Memory reduction completed")
     return stock_prices, sp500
