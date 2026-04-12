@@ -1,7 +1,7 @@
 ## Raid Group for backtesting-SP500
 | User | Role | Assessment |
 |------|------|------------|
-| Rustem Satimov | Leader | Mounting point, Data recreational approach, data analysis, quantative analysis |
+| Rustem Satimov | Leader | Mounting point, Data learning-recreational approach, quantative analysis |
 | Aigerim Akhmetova | Member | Distinctive approach, Data preperation, Main visualization, PnL analysis |
 ___
 

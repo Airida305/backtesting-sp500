@@ -8,7 +8,7 @@
   --accent2:   #c2185b;       /* deep pink — h3, q tags, hover */
   --text:      #1a1a2e;       /* near-black body text */
   --muted:     #5a5a80;       /* medium purple-gray — blockquote text */
-  --code-bg:   #1e1e2e;       /* keep dark so code blocks stay high-contrast */
+  --code-bg:   #ddddec;       /* keep dark so code blocks stay high-contrast */
   --link:      #1565c0;       /* strong blue links */
   --quote-bar: #e53935;       /* red left bar on blockquotes */
   --success:   #1f4320;       /* green — inline code text (on dark bg) */
